@@ -1,0 +1,37 @@
+# Local Terraform state, provider caches, and saved plans.
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfplan.*
+tfplan
+tfplan.*
+crash.log
+crash.*.log
+
+# Local configuration may contain credentials or private access lists.
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+!*.tfvars.json.example
+.env
+.env.*
+!.env.example
+
+node_modules/
+coverage/
+.tools/
+dist/
+*.zip
+.deploy/
+
+# Per-installation deployment notes and generated customer connection exports.
+.azure/
+onboarding-connection*.json
+*.log
+
+# Local credentials and certificate material.
+*.key
+*.pem
+*.pfx
+*.p12

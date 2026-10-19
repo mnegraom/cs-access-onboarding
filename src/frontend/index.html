@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>CS Access Onboarding</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-icon">CS</span><span>CS Starter Kit <small>ACCESS ONBOARDING</small></span></a>
+    <div class="header-actions">
+      <nav class="languages" aria-label="Language">
+        <button type="button" data-lang="pt" aria-label="Português" aria-pressed="true">🇧🇷 <span>PT</span></button>
+        <button type="button" data-lang="es" aria-label="Español" aria-pressed="false">🇪🇸 <span>ES</span></button>
+        <button type="button" data-lang="en" aria-label="English" aria-pressed="false">🇺🇸 <span>EN</span></button>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="workspace">
+      <div class="main-panel">
+        <div id="message" class="message" role="status" aria-live="polite" hidden></div>
+        <div id="login-panel">
+          <span class="section-label" data-i18n="secureEntry">ACESSO AO PORTAL</span>
+          <h1 data-i18n="entryTitle">Access Onboarding</h1>
+          <p class="muted" data-i18n="entryIntro">Entre para configurar o acesso ao seu ambiente Microsoft.</p>
+          <form id="email-form">
+            <label for="email" data-i18n="emailLabel">Seu e-mail</label>
+            <input id="email" type="email" name="email" placeholder="operator@example.com" autocomplete="email" maxlength="254" required>
+            <button class="primary full" type="submit" data-i18n="sendCode">Receber código de acesso →</button>
+          </form>
+          <form id="code-form" hidden>
+            <p class="notice" data-i18n="genericMessage">Se este e-mail estiver autorizado, você receberá um código de acesso válido por cinco minutos.</p>
+            <label for="code" data-i18n="codeLabel">Código de seis dígitos</label>
+            <input id="code" name="code" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" autocomplete="one-time-code" required>
+            <button class="primary full" type="submit" data-i18n="verifyCode">Validar e continuar</button>
+            <button class="text-button full" id="resend" type="button" data-i18n="resend">Enviar outro código</button>
+          </form>
+        </div>
+        <details id="authorization-info" class="requirements" hidden>
+          <summary data-i18n="requirements">Quem pode autorizar?</summary>
+          <p><strong>Microsoft 365</strong><br><span data-i18n="m365Requirement">Privileged Role Administrator ou Global Administrator para consentir permissões de aplicação do Graph. Os privilégios do assistente são apresentados separadamente.</span></p>
+          <p><strong>Azure</strong><br><span data-i18n="azureRequirement">Owner, User Access Administrator ou RBAC Administrator com permissão para atribuir os dois papéis nas assinaturas selecionadas. Contributor não basta.</span></p>
+          <p data-i18n="pim">Ative sua função no PIM, se necessário. Pessoas diferentes podem autorizar cada ambiente.</p>
+        </details>
+        <div id="setup-panel" hidden>
+          <div class="panel-top"><span class="section-label" data-i18n="connectionLabel">NOVA CONEXÃO</span><button class="text-button logout" data-i18n="logout">Sair</button></div>
+          <h2 data-i18n="setupTitle">Qual ambiente vamos conectar?</h2>
+          <p class="muted" data-i18n="setupHint">Informe a aplicação multitenant do parceiro, que também identificará o login deste hub.</p>
+          <form id="setup-form">
+            <label for="app-id">Application (client) ID</label>
+            <input id="app-id" name="appId" pattern="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" minlength="36" maxlength="36" placeholder="00000000-0000-0000-0000-000000000000" required>
+            <label for="client-secret" data-i18n="secretLabel">Client secret (valor)</label>
+            <input id="client-secret" name="clientSecret" type="password" autocomplete="off" maxlength="4096" spellcheck="false" required>
+            <p class="muted" data-i18n="secretHint">Somente o operador autorizado deve informar a credencial. Ela é enviada por HTTPS ao backend e protegida na sessão; não é salva no navegador.</p>
+            <p class="notice"><span data-i18n="callbackHint">Cadastre este endereço como Redirect URI Web na aplicação do parceiro:</span><br><code id="callback-url"></code></p>
+            <label for="customer-tenant" data-i18n="customerTenant">Tenant ID do cliente</label>
+            <input id="customer-tenant" name="customerTenantId" pattern="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" minlength="36" maxlength="36" placeholder="00000000-0000-0000-0000-000000000000" required>
+            <label for="partner-tenant" data-i18n="partnerTenant">Tenant ID do parceiro</label>
+            <input id="partner-tenant" name="partnerTenantId" pattern="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" minlength="36" maxlength="36" placeholder="00000000-0000-0000-0000-000000000000" required>
+            <fieldset class="choices"><legend data-i18n="chooseServices">Ambientes para conectar</legend>
+              <label><input type="checkbox" name="branch" value="azure" checked> Microsoft Azure</label>
+              <label><input type="checkbox" name="branch" value="m365" checked> Microsoft 365</label>
+            </fieldset>
+            <button class="primary full" type="submit" data-i18n="createConnection">Preparar conexão →</button>
+          </form>
+        </div>
+        <div id="manage-panel" hidden>
+          <div class="panel-top"><span class="section-label" data-i18n="manageLabel">GERENCIAR CONEXÃO</span><button class="text-button logout" data-i18n="logout">Sair</button></div>
+          <h2 data-i18n="manageTitle">Autorizações, passo a passo</h2>
+          <dl id="connection-details"></dl>
+          <ul class="progress overview" aria-live="polite"><li id="overview-app"></li><li id="overview-m365"></li><li id="overview-azure"></li></ul>
+          <p class="notice" data-i18n="ephemeralNotice">Sessão temporária: nada será restaurado na próxima entrada. A reversão automática só estará disponível nesta sessão.</p>
+          <section class="action-section">
+            <h3 data-i18n="exportTitle">Dados para a integração</h3>
+            <p class="muted" data-i18n="exportNote">Exporte os identificadores e as assinaturas para armazenar no sistema responsável pela coleta. O arquivo não contém secret, tokens ou sessão e não comprova permissões atuais.</p>
+            <button id="export-connection" type="button" data-i18n="exportConnection">Exportar conexão JSON</button>
+          </section>
+          <details id="credential-panel">
+            <summary data-i18n="sessionCredential">Credencial da aplicação nesta sessão</summary>
+            <p class="muted" id="credential-status"></p>
+            <form id="credential-form">
+              <label for="session-secret" data-i18n="secretLabel">Client secret (valor)</label>
+              <input id="session-secret" name="clientSecret" type="password" autocomplete="off" maxlength="4096" spellcheck="false" required>
+              <button type="submit" data-i18n="updateSecret">Informar / substituir credencial</button>
+            </form>
+          </details>
+          <p class="notice" data-i18n="adminWarning">Uma única aplicação é usada no onboarding e na integração. O primeiro passo solicita apenas autenticação básica. Consentimentos Graph e acessos Azure são autorizados separadamente; acessos já existentes não são removidos.</p>
+          <section class="action-section"><h3 data-i18n="identityTitle">1. Identidade da aplicação no cliente</h3>
+            <p id="identity-notice" class="muted" data-i18n="identityNotice">Autentique no tenant do cliente. A Microsoft pode solicitar login, perfil básico e manutenção da sessão e criar a Enterprise App durante o consentimento. Este passo não solicita leitura/escrita de aplicações, acesso Graph de coleta ou permissões Azure. Se a identidade já for confirmada antes do login, verificamos os acessos existentes sem conceder novos. Uma verificação bloqueada não significa que a app não existe.</p>
+            <ul class="progress" aria-live="polite"><li id="login-status"></li><li id="principal-state"></li></ul>
+            <div class="actions"><button data-auth="identity" data-i18n="customerLogin" aria-describedby="identity-notice">Registrar / autenticar no Microsoft Entra</button><button data-action="/api/onboarding/check" data-i18n="checkConnection">Verificar os três itens novamente</button></div>
+            <p id="principal-status" class="muted"></p>
+          </section>
+          <section class="action-section" id="m365-actions"><h3>2. Microsoft 365</h3>
+            <p class="muted" data-i18n="m365ConfigNote">Revise e aceite ou recuse as permissões na tela oficial da Microsoft, no tenant do cliente. Não há login no tenant do parceiro.</p>
+            <ul class="progress" aria-live="polite"><li id="consent-status"></li><li id="graph-test-status"></li></ul>
+            <div class="actions"><button data-action="/api/m365/consent" data-i18n="consent">Consentimento no portal Microsoft</button><button data-action="/api/m365/test" data-i18n="testGraph">Testar Graph com a aplicação</button></div>
+            <p class="muted" data-i18n="consentTracking">Concessões criadas diretamente pelo assistente são rastreadas para reversão. O consentimento feito no portal Microsoft é validado, mas não atribuído automaticamente a este módulo para exclusão.</p>
+            <details><summary data-i18n="effectivePermissions">Permissões de aplicação Graph encontradas no cliente</summary><ul id="graph-permissions"></ul></details>
+          </section>
+          <section class="action-section" id="azure-actions"><h3>3. Microsoft Azure</h3>
+            <p class="muted" data-i18n="azureRoles">Somente Reader + Cost Management Reader, nas assinaturas que você selecionar.</p>
+            <ul class="progress" aria-live="polite"><li id="azure-login-status"></li><li id="azure-discovery-status"></li><li id="azure-selection-status"></li></ul>
+            <p class="muted" data-i18n="azureIdentityNote">Descoberta e concessão usam o administrador do cliente. O teste usa o App ID e secret, com um token exclusivo do Azure.</p>
+            <div class="actions"><button data-auth="arm" data-i18n="azureLogin">Entrar no Azure do cliente</button><button data-action="/api/azure/discover" data-i18n="reviewAzure">Revisar / adicionar assinaturas</button></div>
+            <form id="selection-form"><fieldset id="subscriptions"><legend data-i18n="subscriptions">Assinaturas disponíveis</legend></fieldset><button type="submit" data-i18n="saveSelection">Salvar seleção</button></form>
+            <div class="actions"><button class="primary" data-action="/api/azure/grant" data-confirm="grant" data-i18n="grant">Conceder acessos selecionados</button><button data-action="/api/azure/test" data-i18n="testAzure">Testar Azure com a aplicação</button></div>
+            <div id="azure-results" aria-live="polite"></div>
+          </section>
+          <section class="verification"><h3 data-i18n="verificationTitle">Configuração não é teste funcional</h3><p data-i18n="verificationNote">A verificação confirma concessões e atribuições. O acesso efetivo com a identidade da aplicação de análise ainda requer um teste com a credencial dessa aplicação. Permissões podem levar tempo para propagar.</p></section>
+          <details class="revoke"><summary data-i18n="revokeTitle">Desfazer acessos deste onboarding</summary>
+            <p data-i18n="revokeNote">Remove somente as concessões rastreadas por este módulo. A Enterprise Application e os acessos anteriores são preservados. Outros acessos e tokens já emitidos podem continuar válidos temporariamente.</p>
+            <div class="actions"><button class="danger" data-action="/api/azure/revoke" data-confirm="revoke" data-i18n="revokeAzure">Revogar Azure</button></div>
+          </details>
+          <details><summary data-i18n="results">Último resultado técnico</summary><pre id="result"></pre></details>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer><span>Access Onboarding · <span id="partner-footer">Your Partner</span></span></footer>
+</body>
+</html>
